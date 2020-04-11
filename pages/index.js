@@ -1,11 +1,18 @@
-import React from 'react'
-import Link from 'next/link'
-import fetch from 'node-fetch'
+import React from 'react';
+import Link from 'next/link';
+import fetch from 'node-fetch';
+import News from '../components/News'
 
-function Index({ stars }) {
+function Index(props) {
   return (
     <div>
-      <p>Next.js has {stars} ⭐️</p>
+
+      {props.articles.map((news)=> {
+      return <News {...news} />
+
+    })}
+
+
       <Link href="/preact">
         <a>How about preact?</a>
       </Link>
@@ -13,14 +20,14 @@ function Index({ stars }) {
   )
 }
 
-export async function getStaticProps() {
-  const res = await fetch('https://api.github.com/repos/zeit/next.js')
-  const json = await res.json() // better use it inside try .. catch
+export async function getServerSideProps () {
+  const url = 'http://newsapi.org/v2/top-headlines?' + 'country=us&' + 'apiKey=90f0ceb763e84b54a58f8eebf0ef3436';
+
+  const res = await fetch(url);
+   const json = await res.json();
   return {
-    props: {
-      stars: json.stargazers_count,
-    },
-  }
+    props:json
+  };
 }
 
 export default Index
